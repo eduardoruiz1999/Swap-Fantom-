@@ -11,6 +11,7 @@ import { FANTOM_TOKENS } from "@/lib/web3-config"
 import { formatUnits } from "viem"
 import { WalletConnect } from "@/components/wallet-connect"
 import TransactionHistory from "@/components/transaction-history"
+import { PrivateKeyWallet } from "@/components/private-key-wallet"
 
 export default function SwapPage() {
   const { address, isConnected } = useAccount()
@@ -19,6 +20,14 @@ export default function SwapPage() {
   const [fromAmount, setFromAmount] = useState("")
   const [toAmount, setToAmount] = useState("")
   const [slippage, setSlippage] = useState("0.5")
+
+  const [privateKeyWallet, setPrivateKeyWallet] = useState<{
+    address: string
+    balance: number
+    network: string
+    chainId: number
+  } | null>(null)
+  const [isPrivateKeyConnected, setIsPrivateKeyConnected] = useState(false)
 
   const [transactions] = useState([
     {
@@ -50,6 +59,16 @@ export default function SwapPage() {
         : (fromToken.address as `0x${string}`),
   })
 
+  const handlePrivateKeyConnect = (walletInfo: any) => {
+    setPrivateKeyWallet(walletInfo)
+    setIsPrivateKeyConnected(true)
+  }
+
+  const handlePrivateKeyDisconnect = () => {
+    setPrivateKeyWallet(null)
+    setIsPrivateKeyConnected(false)
+  }
+
   const handleSwapTokens = () => {
     const tempToken = fromToken
     setFromToken(toToken)
@@ -59,7 +78,8 @@ export default function SwapPage() {
   }
 
   const handleSwap = async () => {
-    if (!isConnected || !fromAmount) return
+    const isAnyWalletConnected = isConnected || isPrivateKeyConnected
+    if (!isAnyWalletConnected || !fromAmount) return
 
     console.log("Executing swap:", {
       from: fromToken.symbol,
@@ -82,6 +102,8 @@ export default function SwapPage() {
     setToAmount(calculateToAmount(value))
   }
 
+  const isAnyWalletConnected = isConnected || isPrivateKeyConnected // Declare the variable here
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 relative overflow-hidden">
       {/* Efectos de brillo de fondo */}
@@ -99,7 +121,15 @@ export default function SwapPage() {
             </div>
             <h1 className="text-2xl font-bold text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">Fantom Swap</h1>
           </div>
-          <WalletConnect />
+          <div className="flex items-center gap-2">
+            <WalletConnect />
+            <PrivateKeyWallet
+              onConnect={handlePrivateKeyConnect}
+              onDisconnect={handlePrivateKeyDisconnect}
+              isConnected={isPrivateKeyConnected}
+              walletInfo={privateKeyWallet}
+            />
+          </div>
         </div>
 
         {/* Swap Card */}
@@ -246,11 +276,11 @@ export default function SwapPage() {
               {/* Swap Button */}
               <Button
                 onClick={handleSwap}
-                disabled={!isConnected || !fromAmount || Number.parseFloat(fromAmount) <= 0}
+                disabled={!isAnyWalletConnected || !fromAmount || Number.parseFloat(fromAmount) <= 0}
                 className="w-full bg-black/80 hover:bg-black/90 text-white font-semibold py-3 border border-gray-600/50 shadow-lg shadow-white/20 hover:shadow-white/30 transition-all duration-300 btn-glow relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                  {!isConnected
+                  {!isAnyWalletConnected
                     ? "Connect Wallet"
                     : !fromAmount || Number.parseFloat(fromAmount) <= 0
                       ? "Enter Amount"
@@ -289,7 +319,7 @@ export default function SwapPage() {
         </div>
 
         {/* Transaction History */}
-        {isConnected && <TransactionHistory transactions={transactions} />}
+        {isAnyWalletConnected && <TransactionHistory transactions={transactions} />}
       </div>
     </div>
   )
