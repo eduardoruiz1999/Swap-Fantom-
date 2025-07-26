@@ -289,7 +289,7 @@ export default function SwapPage() {
         </div>
 
         {/* Transaction History */}
-        <TransactionHistory transactions={transactions} />
+        {isConnected && <TransactionHistory transactions={transactions} />}
       </div>
     </div>
   )

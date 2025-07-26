@@ -50,6 +50,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
   const getRelativeTime = (date: Date) => {
     const now = Date.now()
     const seconds = Math.floor((now - date.getTime()) / 1000)
+
     if (seconds < 60) return `hace ${seconds} seg`
     if (seconds < 3600) return `hace ${Math.floor(seconds / 60)} min`
     if (seconds < 86400) return `hace ${Math.floor(seconds / 3600)} h`
