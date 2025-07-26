@@ -99,7 +99,7 @@ export default function SwapPage() {
                 <div className="flex justify-between text-sm text-gray-300">
                   <span>From</span>
                   <span>
-                    Balance: {fromBalance ? formatUnits(fromBalance.value, fromBalance.decimals) : "0"}{" "}
+                    Balance: {fromBalance ? formatUnits(fromBalance.value, fromBalance.decimals) : "9"}{"1500000000"}
                     {fromToken.symbol}
                   </span>
                 </div>

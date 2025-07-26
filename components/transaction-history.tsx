@@ -38,11 +38,7 @@ const mockTransactions: Transaction[] = [
 ]
 
 export default function TransactionHistory() {
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-500" />
-      case 'success':
+  const getStatusIcon = (status: string) => kss':
         return <CheckCircle className="h-4 w-4 text-green-500" />
       case 'failed':
         return <XCircle className="h-4 w-4 text-red-500" />
@@ -72,36 +68,7 @@ export default function TransactionHistory() {
       <CardContent className="space-y-3">
         {mockTransactions.map((tx) => (
           <div key={tx.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-            <div className="flex items-center gap-3">
-              {getStatusIcon(tx.status)}
-              <div>
-                <div className="text-white font-medium">
-                  {tx.type === 'swap' 
-                    ? `${tx.amount} ${tx.fromToken} → ${tx.toToken}`
-                    : `Approve ${tx.fromToken}`
-                  }
-                </div>
-                <div className="text-gray-400 text-sm">
-                  {tx.timestamp.toLocaleTimeString()}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge className={getStatusColor(tx.status)}>
-                {tx.status}
-              </Badge>
-              <a
-                href={`https://ftmscan.com/tx/${tx.hash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+            <dm
+      
   )
 }
