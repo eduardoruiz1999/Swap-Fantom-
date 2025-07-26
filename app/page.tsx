@@ -10,6 +10,7 @@ import { ArrowUpDown, Settings, Zap } from "lucide-react"
 import { FANTOM_TOKENS } from "@/lib/web3-config"
 import { formatUnits } from "viem"
 import { WalletConnect } from "@/components/wallet-connect"
+import TransactionHistory from "@/components/transaction-history"
 
 export default function SwapPage() {
   const { address, isConnected } = useAccount()
@@ -18,6 +19,28 @@ export default function SwapPage() {
   const [fromAmount, setFromAmount] = useState("")
   const [toAmount, setToAmount] = useState("")
   const [slippage, setSlippage] = useState("0.5")
+
+  const [transactions] = useState([
+    {
+      id: "1",
+      type: "swap" as const,
+      fromToken: "FTM",
+      toToken: "JEFE",
+      amount: "100",
+      status: "success" as const,
+      hash: "0x1234567890abcdef1234567890abcdef12345678",
+      timestamp: new Date(Date.now() - 300000),
+    },
+    {
+      id: "2",
+      type: "approve" as const,
+      fromToken: "USDC",
+      amount: "1000",
+      status: "pending" as const,
+      hash: "0x9876543210fedcba9876543210fedcba98765432",
+      timestamp: new Date(Date.now() - 60000),
+    },
+  ])
 
   const { data: fromBalance } = useBalance({
     address: address,
@@ -99,7 +122,8 @@ export default function SwapPage() {
                 <div className="flex justify-between text-sm text-gray-300">
                   <span>From</span>
                   <span>
-                    Balance: {fromBalance ? formatUnits(fromBalance.value, fromBalance.decimals) : "9"}{"1500000000"}
+                    Balance: {fromBalance ? formatUnits(fromBalance.value, fromBalance.decimals) : "9"}
+                    {"1500000000"}
                     {fromToken.symbol}
                   </span>
                 </div>
@@ -263,6 +287,9 @@ export default function SwapPage() {
           <p>Connected to Fantom Network</p>
           <p className="text-xs mt-1">Powered by SpookySwap & SpiritSwap</p>
         </div>
+
+        {/* Transaction History */}
+        <TransactionHistory transactions={transactions} />
       </div>
     </div>
   )
